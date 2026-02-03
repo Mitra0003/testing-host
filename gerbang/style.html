@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard Gerbang Otomatis</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #eef2f7;
+        padding: 20px;
+    }
+    h1 {
+        text-align: center;
+    }
+    .top {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+    .card {
+        background: rgb(4, 33, 219);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .status {
+        font-size: 26px;
+        font-weight: bold;
+        text-align: center;
+        padding: 20px;
+        border-radius: 10px;
+    }
+    .open {
+        background: #d4edda;
+        color: #155724;
+    }
+    .closed {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid #2902d8;
+        padding: 10px;
+        text-align: center;
+    }
+    th {
+        background: #007bff;
+        color: white;
+    }
+    .time {
+        font-size: 18px;
+        text-align: center;
+    }
+</style>
+</head>
+<body>
+
+<h1>Dashboard Monitoring Gerbang Otomatis</h1>
+
+<div class="top">
+    <div class="card">
+        <h2>Status Gerbang</h2>
+        <div id="gateStatus" class="status closed">TERTUTUP</div>
+    </div>
+
+    <div class="card">
+        <h2>Waktu Real-Time</h2>
+        <div id="clock" class="time"></div>
+    </div>
+</div>
+
+<div class="card">
+    <h2>Data Keluar Masuk Pengguna</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>ID Pengguna</th>
+                <th>Nama</th>
+                <th>Aktivitas</th>
+                <th>Tanggal & Waktu</th>
+            </tr>
+        </thead>
+        <tbody id="logTable"></tbody>
+    </table>
+</div>
+
+<script>
+let no = 0;
+
+const users = [
+    {id: "QR001", name: "Mitra Saputra"},
+    {id: "QR002", name: "Admin Sistem"},
+    {id: "QR003", name: "Tamu Terdaftar"}
+];
+
+// Jam real-time
+function updateClock() {
+    const now = new Date();
+    document.getElementById("clock").textContent =
+        now.toLocaleDateString() + " | " + now.toLocaleTimeString();
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// Simulasi aktivitas keluar masuk
+function simulateAccess() {
+    no++;
+    const user = users[Math.floor(Math.random() * users.length)];
+    const activity = Math.random() > 0.5 ? "MASUK" : "KELUAR";
+    const time = new Date().toLocaleString();
+
+    // Status gerbang
+    const gate = document.getElementById("gateStatus");
+    gate.textContent = "TERBUKA";
+    gate.className = "status open";
+
+    // Tambah data ke tabel
+    const table = document.getElementById("logTable");
+    const row = table.insertRow(0);
+
+    row.insertCell(0).textContent = no;
+    row.insertCell(1).textContent = user.id;
+    row.insertCell(2).textContent = user.name;
+    row.insertCell(3).textContent = activity;
+    row.insertCell(4).textContent = time;
+
+    // Tutup gerbang otomatis
+    setTimeout(() => {
+        gate.textContent = "TERTUTUP";
+        gate.className = "status closed";
+    }, 4000);
+}
+
+// Jalankan otomatis tiap 7 detik
+setInterval(simulateAccess, 10000);
+</script>
+
+</body>
+</html>
